@@ -1,16 +1,14 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const tileSize = 20;
+const tileSize = 40;
 const numRows = canvas.height / tileSize;
 const numCols = canvas.width / tileSize;
 
 let snake = [
-  { x: 1 * tileSize, y: 3 * tileSize },
-  { x: 2 * tileSize, y: 3 * tileSize },
   { x: 3 * tileSize, y: 3 * tileSize },
-  // { x: 3 * tileSize, y: 4 * tileSize },
-  // { x: 3 * tileSize, y: 5 * tileSize }
+  { x: 2 * tileSize, y: 3 * tileSize },
+  { x: 1 * tileSize, y: 3 * tileSize },
 ];
 // console.log(snake)
 let dx = tileSize;
@@ -309,6 +307,7 @@ function drawSnake() {
       ctx.closePath()
     }
   }
+  ctx.closePath()
 }
 
 
@@ -316,8 +315,14 @@ function drawFood() {
   ctx.fillStyle = "#D1B6B6";
   ctx.strokeStyle = 'black';
   ctx.lineWidth = 2;
-  ctx.fillRect(food.x, food.y, tileSize, tileSize);
-  ctx.strokeRect(food.x, food.y, tileSize, tileSize);
+  ctx.beginPath()
+  // ctx.moveTo(food.x, food.y)
+  const tileRadius = tileSize/2
+  ctx.arc(food.x + tileRadius, food.y + tileRadius, tileRadius, 0, 2 * Math.PI);
+  ctx.fill()
+  ctx.stroke()
+  // ctx.fillRect(food.x, food.y, tileSize, tileSize);
+  // ctx.strokeRect(food.x, food.y, tileSize, tileSize);
 }
 
 function createFood() {
