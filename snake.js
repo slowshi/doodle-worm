@@ -1,16 +1,18 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-
+const scoreElement = document.getElementById('score')
+scoreElement.innerHTML = 'Score: 0'
 const tileSize = 40;
 const numRows = canvas.height / tileSize;
 const numCols = canvas.width / tileSize;
-
+let score = 0
+let gameReady  = true
 let snake = [
   { x: 3 * tileSize, y: 3 * tileSize },
   { x: 2 * tileSize, y: 3 * tileSize },
   { x: 1 * tileSize, y: 3 * tileSize },
 ];
-// console.log(snake)
+
 let dx = tileSize;
 let dy = 0;
 
@@ -20,6 +22,8 @@ function update() {
   const head = { x: snake[0].x + dx, y: snake[0].y + dy };
 
   if (head.x === food.x && head.y === food.y) {
+    score++
+    scoreElement.innerHTML = `Score: ${score}`
     food = createFood();
   } else {
     snake.pop();
@@ -31,7 +35,9 @@ function update() {
     resetGame();
   }
 
-  setTimeout(update, 100);
+  if(gameReady === false) {
+    setTimeout(update, 100);
+  }
 }
 
 function draw() {
@@ -158,7 +164,6 @@ function drawSnake() {
       ctx.stroke()
       ctx.closePath()
     }
-
     const topRightElbow = (ctx, part, tileSize)=> {
       ctx.moveTo(part.x, part.y)
       ctx.arc(part.x + tileSize / 2, part.y + tileSize / 2, tileSize / 2, 1.5*Math.PI, 2*Math.PI);
@@ -175,7 +180,6 @@ function drawSnake() {
       ctx.stroke()
       ctx.closePath()
     }
-
     const bottomRightElbow = (ctx, part, tileSize)=> {
       ctx.moveTo(part.x + tileSize, part.y)
       ctx.arc(part.x + tileSize / 2, part.y + tileSize / 2, tileSize / 2, 2*Math.PI, .5*Math.PI);
@@ -192,7 +196,6 @@ function drawSnake() {
       ctx.stroke()
       ctx.closePath()
     }
-
     const bottomLeftElbow = (ctx, part, tileSize)=> {
       ctx.moveTo(part.x + tileSize, part.y + tileSize)
       ctx.arc(part.x + tileSize / 2, part.y + tileSize / 2, tileSize / 2, .5*Math.PI, 1*Math.PI);
@@ -209,7 +212,6 @@ function drawSnake() {
       ctx.stroke()
       ctx.closePath()
     }
-
     const drawHorizontal = (ctx, part, tileSize)=> {
       ctx.fillRect(part.x, part.y, tileSize, tileSize)
       ctx.moveTo(part.x, part.y);
@@ -219,7 +221,6 @@ function drawSnake() {
       ctx.lineTo(part.x + tileSize, part.y + tileSize);
       ctx.stroke();
     }
-
     const drawVertical = (ctx, part, tileSize)=> {
       ctx.fillRect(part.x, part.y, tileSize, tileSize)
       ctx.moveTo(part.x, part.y);
@@ -354,6 +355,9 @@ function resetGame() {
   ];
   dx = tileSize;
   dy = 0;
+  score = 0
+  scoreElement.innerHTML = `Score: ${score}`
+  gameReady = true
   food = createFood();
 }
 
@@ -370,6 +374,10 @@ document.addEventListener("keydown", (e) => {
   } else if (e.key === "ArrowRight" && dx === 0) {
     dx = tileSize;
     dy = 0;
+  } else if (e.key === ' ' && gameReady) {
+    gameReady = false
+    update()
+    console.log(e.key)
   }
 });
 
